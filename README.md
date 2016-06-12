@@ -2,6 +2,15 @@
 
 A Clojure library designed to ... well, that part is up to you.
 
+## Configuration
+> you can create a config.clj like me.
+
+### access-token
+> Your page's access token
+
+### verify-token
+> Your verify token
+
 ## Usage
 
 FIXME
