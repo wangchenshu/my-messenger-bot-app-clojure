@@ -39,9 +39,9 @@
           timestamp (messaging :timestamp)
           resp (http/post (str messenger-url "?access_token=" access-token)
                           (assoc options :body (json/write-str (message/create-text-message sender message))))]
-      (if (< (- (System/currentTimeMillis) timestamp) 10)
-        (println "Response 's status: " (:status @resp))
-        (println "Get the older message!")))))
+      (if (< (- (System/currentTimeMillis) timestamp) 60000)
+        (println "Response 's body: " (:body @resp))
+        (println (str "Get the older message! timestamp: " timestamp))))))
 
 (defroutes main-routes
   (GET "/webhook" req (webhook-get-handler req))
