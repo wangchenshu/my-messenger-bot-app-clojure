@@ -4,7 +4,6 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
-            [ring.util.response :as response]
             [org.httpkit.client :as http]
             [my-messenger-bot-app-clojure.message :as message]))
 
