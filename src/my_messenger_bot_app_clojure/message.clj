@@ -7,7 +7,7 @@
                 :h4 "Welcome to h4!"
                 :emacs "Welcome to Emacs Taiwan!"
                 :how-are-you-today "How are you today?"
-                :i-am-fine "I am fine, thank you."
+                :i-am-fine "Fine, how do you do."
                 :h4-place '["餐廳：田中園光華店"
                             "地址：台北市中正區臨沂街 1 號"
                             "(捷運忠孝新生站一號出口直走第一個路口右轉)"
