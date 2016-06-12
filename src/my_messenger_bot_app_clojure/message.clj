@@ -1,15 +1,6 @@
 (ns my-messenger-bot-app-clojure.message
   (:require [clojure.string :as string]))
 
-(def config (load-file "config.clj"))
-(def content-type {:text 1
-                   :image 2
-                   :video 3
-                   :audio 4
-                   :location 7
-                   :sticker 8
-                   :contact 10
-                   :rich 12})
 (def image-link {:h4 "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/h4-logo"
                  :emacs "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/emacs-logo"})
 (def send-text {:default "Welcome to h4!"
