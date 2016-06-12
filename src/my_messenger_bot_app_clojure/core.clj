@@ -38,8 +38,7 @@
           message (get-in messaging [:message :text])
           resp (http/post (str messenger-url "?access_token=" access-token)
                           (assoc options :body (json/write-str (message/create-text-message sender message))))]
-      (println messaging)
-      (println "Response 's status: " (:body @resp)))))
+      (println "Response 's status: " (:status @resp)))))
 
 (defroutes main-routes
   (GET "/webhook" req (webhook-get-handler req))
