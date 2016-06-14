@@ -8,5 +8,6 @@
                  [ring/ring-jetty-adapter "1.4.0"]
                  [compojure "1.5.0"]
                  [org.clojure/data.json "0.2.6"]
-                 [http-kit "2.1.18"]]
+                 [http-kit "2.1.19"]
+                 [clj-http "3.1.0"]]
   :main my-messenger-bot-app-clojure.core)
