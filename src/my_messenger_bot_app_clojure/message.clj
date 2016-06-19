@@ -1,8 +1,8 @@
 (ns my-messenger-bot-app-clojure.message
   (:require [clojure.string :as string]))
 
-(def image-link {:h4 "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/h4-logo"
-                 :emacs "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/emacs-logo"})
+(def image-link {:h4 "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fh4-logo%2F700.jpg?alt=media&token=04ff5f19-2d0c-470f-8581-396085fbb10d"
+                 :emacs "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Femacs-logo%2Femacs_logo_large.png?alt=media&token=a8a55896-f703-4e10-adce-302a44f792c5"})
 (def send-text {:default "Welcome to h4!"
                 :h4 "Welcome to h4!"
                 :emacs "Welcome to Emacs Taiwan!"
@@ -66,3 +66,10 @@
                           :url "http://www.meetup.com/hackingthursday/"
                           }]}
               }}})
+
+(defn create-image-message [sender]
+  {:recipient {:id sender}
+   :message {:attachment
+             {:type "image"
+              :payload {:url
+                        (image-link :h4)}}}})
