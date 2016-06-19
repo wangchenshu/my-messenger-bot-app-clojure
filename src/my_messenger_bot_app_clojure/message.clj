@@ -34,11 +34,21 @@
 (defn get-suggest-message [text]
   (case text
     "how to get to h4" (string/join "\n" (send-text :h4-place))
+    "h4 怎麼去" (string/join "\n" (send-text :h4-place))
+    "h4 怎麼去?" (string/join "\n" (send-text :h4-place))
+    "h4 怎麼走" (string/join "\n" (send-text :h4-place))
+    "h4 怎麼走?" (string/join "\n" (send-text :h4-place))
     "what h4 people do" (string/join "\n" (send-text :h4-people-do))
+    "h4 都做些什麼" (string/join "\n" (send-text :h4-people-do))
     "h4 beginning" (string/join "\n" (send-text :h4-beginning))
+    "h4 由來" (string/join "\n" (send-text :h4-beginning))
     "contact us" (string/join "\n" (send-text :contact-us))
+    "聯絡" (string/join "\n" (send-text :contact-us))
+    "聯絡我們" (string/join "\n" (send-text :contact-us))
     "emacs" (send-text :emacs)
     "how are you" (send-text :i-am-fine)
+    "你好嗎" (send-text :i-am-fine)
+    "你好嗎?" (send-text :i-am-fine)
     (send-text :default)))
 
 (defn create-text-message [sender text]
