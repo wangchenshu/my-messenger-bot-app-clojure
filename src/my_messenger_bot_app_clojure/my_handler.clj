@@ -22,7 +22,7 @@
   (fn [sender]
     (str base-url
          sender
-         "?fields=first_name,last_name,locale,timezone,gender"
+         "?fields=first_name,last_name,locale,profile_pic,timezone,gender"
          "&access_token=" access-token)))
 
 (def get-body
@@ -34,12 +34,13 @@
         user-profile-resp (http/get user-profile-url options)]
     (let [body (json/read-str (:body @user-profile-resp) :key-fn keyword)
           user-name (str (body :first_name) " " (body :last_name))
-          ;say-hello (message/say-hello sender user-name)
-          ;say-hello-resp (http/post text-msg-url (get-body say-hello))
+          send-image-msg (message/create-image-message sender)
+          send-image-resp (http/post text-msg-url (get-body send-image-msg))
           send-msg-resp (http/post text-msg-url (get-body send-msg))
           send-butten-msg (message/create-butten-template-message sender)
           send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
 
+      (println user-name)
       (println (:body @user-profile-resp)))))
 
 (defn send-butten-message [sender options]
