@@ -42,6 +42,27 @@
     (send-text :default)))
 
 (defn create-text-message [sender text]
-  (let [send-text (get-suggest-message text)]
+  (let [text (string/lower-case text)
+        send-text (get-suggest-message text)]
     {:recipient {:id sender}
      :message {:text send-text}}))
+
+(defn say-hello [sender user-name]
+  {:recipient {:id sender}
+   :message {:text (str "Hello, " user-name " :")}})
+
+(defn create-butten-template-message [sender]
+  {:recipient {:id sender}
+   :message {:attachment
+             {:type "template"
+              :payload
+              {:template_type "button"
+               :text "What do you want to do next?"
+               :buttons [{:type "web_url"
+                          :url "http://www.hackingthursday.org/"
+                          :title "H4 Website"}
+                         {:type "web_url"
+                          :title "H4 Meetup"
+                          :url "http://www.meetup.com/hackingthursday/"
+                          }]}
+              }}})
