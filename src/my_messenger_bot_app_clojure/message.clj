@@ -3,6 +3,9 @@
 
 (def image-link {:h4 "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fh4-logo%2F700.jpg?alt=media&token=04ff5f19-2d0c-470f-8581-396085fbb10d"
                  :emacs "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Femacs-logo%2Femacs_logo_large.png?alt=media&token=a8a55896-f703-4e10-adce-302a44f792c5"})
+(def h4-web "http://www.hackingthursday.org/")
+(def h4-meetup "http://www.meetup.com/hackingthursday/")
+(def h4-fb "http://www.facebook.com/groups/hackingday/")
 (def send-text {:default "Welcome to h4!"
                 :h4 "Welcome to h4!"
                 :emacs "Welcome to Emacs Taiwan!"
@@ -27,29 +30,32 @@
                 :contact-us '["除了實體聚會外，我們使用 Google group / Facebook group 做為大家的溝通聯絡管道。"
                               "聊天，討論，及聚會通告都會在這裡發佈。如果您對我們的聚會有興趣，隨時都歡迎您加入/訂閱我們的討論區，和我們交流！！"
                               ""
-                              "http://groups.google.com/group/hackingthursday ( Google group )"
-                              "http://www.facebook.com/groups/hackingday/ ( Facebook group )"
-                              "https://www.meetup.com/hackingthursday/ ( Meetup )"]})
+                              "FB: http://www.facebook.com/groups/hackingday/"
+                              "Meetup: https://www.meetup.com/hackingthursday/"
+                              "Google Group: http://groups.google.com/group/hackingthursday"]})
 
 (defn get-suggest-message [text]
-  (case text
-    "how to get to h4" (string/join "\n" (send-text :h4-place))
-    "h4 怎麼去" (string/join "\n" (send-text :h4-place))
-    "h4 怎麼去?" (string/join "\n" (send-text :h4-place))
-    "h4 怎麼走" (string/join "\n" (send-text :h4-place))
-    "h4 怎麼走?" (string/join "\n" (send-text :h4-place))
-    "what h4 people do" (string/join "\n" (send-text :h4-people-do))
-    "h4 都做些什麼" (string/join "\n" (send-text :h4-people-do))
-    "h4 beginning" (string/join "\n" (send-text :h4-beginning))
-    "h4 由來" (string/join "\n" (send-text :h4-beginning))
-    "contact us" (string/join "\n" (send-text :contact-us))
-    "聯絡" (string/join "\n" (send-text :contact-us))
-    "聯絡我們" (string/join "\n" (send-text :contact-us))
-    "emacs" (send-text :emacs)
-    "how are you" (send-text :i-am-fine)
-    "你好嗎" (send-text :i-am-fine)
-    "你好嗎?" (send-text :i-am-fine)
-    (send-text :default)))
+  (cond
+    (or (re-find #"how are you" text)
+        (or (re-find #"好" text)
+            (and (re-find #"你" text)
+                 (re-find #"您" text)))) (send-text :i-am-fine)
+    (or (re-find #"contact" text)
+        (re-find #"找" text)
+        (re-find #"連絡" text)) (string/join "\n" (send-text :contact-us))
+    (or (re-find #"由來" text)
+        (re-find #"開始" text)
+        (re-find #"beginning" text)) (string/join "\n" (send-text :h4-beginning))
+    (or (re-find #"go" text)
+        (re-find #"to" text)
+        (re-find #"去" text)
+        (re-find #"走" text)) (string/join "\n" (send-text :h4-place))
+    (or (re-find #"do" text)
+        (re-find #"做" text)) (string/join "\n" (send-text :h4-people-do))
+    (re-find #"web" text) h4-web
+    (re-find #"meetup" text) h4-meetup
+    (re-find #"fb" text) h4-fb
+    :else (send-text :default)))
 
 (defn create-text-message [sender text]
   (let [text (string/lower-case text)
@@ -68,18 +74,13 @@
               :payload
               {:template_type "button"
                :text "What do you want to do next?"
-               :buttons [{:type "web_url"
-                          :url "http://www.hackingthursday.org/"
-                          :title "H4 Website"}
-                         {:type "web_url"
-                          :title "H4 Meetup"
-                          :url "http://www.meetup.com/hackingthursday/"
-                          }]}
-              }}})
+               :buttons [{:type "web_url" :url h4-web :title "Website"}
+                         {:type "web_url" :title "FB" :url h4-fb}
+                         {:type "web_url" :title "Meetup" :url h4-meetup}]
+               }}}})
 
 (defn create-image-message [sender]
   {:recipient {:id sender}
    :message {:attachment
              {:type "image"
-              :payload {:url
-                        (image-link :h4)}}}})
+              :payload {:url (image-link :h4)}}}})
