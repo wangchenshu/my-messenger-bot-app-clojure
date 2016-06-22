@@ -9,11 +9,11 @@
 (def config (load-file "config.clj"))
 (def port (config :port))
 (def verify-token (config :verify-token2))
-(def success 200)
+(def ok 200)
 
 (defn check-webhook [query-string]
   (if (= (query-string :hub.verify_token) verify-token)
-    {:status success
+    {:status ok
      :body (query-string :hub.challenge)}
     (println "Error, wrong validation token")))
 
@@ -26,7 +26,7 @@
 
 (defn webhook-post-handler [req]
   (my-router/route req)
-  {:status success})
+  {:status ok})
 
 (defroutes main-routes
   (GET "/webhook" req (webhook-get-handler req))
