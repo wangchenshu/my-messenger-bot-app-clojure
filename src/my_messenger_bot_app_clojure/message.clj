@@ -2,7 +2,8 @@
   (:require [clojure.string :as string]))
 
 (def image-link {:h4 "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fh4-logo%2F700.jpg?alt=media&token=04ff5f19-2d0c-470f-8581-396085fbb10d"
-                 :emacs "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Femacs-logo%2Femacs_logo_large.png?alt=media&token=a8a55896-f703-4e10-adce-302a44f792c5"})
+                 :emacs "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Femacs-logo%2Femacs_logo_large.png?alt=media&token=a8a55896-f703-4e10-adce-302a44f792c5"
+                 :baobao "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fother%2Fiyiy.jpg?alt=media&token=1d0dfd87-d61a-48d5-8ea0-0bd86c9b9458"})
 (def h4-web "http://www.hackingthursday.org/")
 (def h4-meetup "http://www.meetup.com/hackingthursday/")
 (def h4-fb "http://www.facebook.com/groups/hackingday/")
@@ -32,7 +33,10 @@
                               ""
                               "FB: http://www.facebook.com/groups/hackingday/"
                               "Meetup: https://www.meetup.com/hackingthursday/"
-                              "Google Group: http://groups.google.com/group/hackingthursday"]})
+                              "Google Group: http://groups.google.com/group/hackingthursday"]
+                :registed " 您好, 已完成報到手續, 謝謝。"
+                :good-d-ya "好的呀"
+                :iyiy "搖搖照騙"})
 
 (defn get-suggest-message [text]
   (cond
@@ -42,6 +46,7 @@
                  (re-find #"您" text)))) (send-text :i-am-fine)
     (or (re-find #"contact" text)
         (re-find #"找" text)
+        (re-find #"聯絡" text)
         (re-find #"連絡" text)) (string/join "\n" (send-text :contact-us))
     (or (re-find #"由來" text)
         (re-find #"開始" text)
@@ -52,6 +57,11 @@
         (re-find #"走" text)) (string/join "\n" (send-text :h4-place))
     (or (re-find #"do" text)
         (re-find #"做" text)) (string/join "\n" (send-text :h4-people-do))
+    (or (re-find #"register" text)
+        (re-find #"報到" text)
+        (re-find #"簽到" text)) (send-text :register)
+    (re-find #"已給到" text) (send-text :good-d-ya)
+    (re-find #"抱抱" text) (send-text :iyiy)
     (re-find #"web" text) h4-web
     (re-find #"meetup" text) h4-meetup
     (re-find #"fb" text) h4-fb
@@ -60,6 +70,11 @@
 (defn create-text-message [sender text]
   (let [text (string/lower-case text)
         send-text (get-suggest-message text)]
+    {:recipient {:id sender}
+     :message {:text send-text}}))
+
+(defn create-resgisted-message [sender user-name text]
+  (let [send-text (str user-name (send-text :registed))]
     {:recipient {:id sender}
      :message {:text send-text}}))
 
@@ -84,3 +99,9 @@
    :message {:attachment
              {:type "image"
               :payload {:url (image-link :h4)}}}})
+
+(defn create-baobao-image-message [sender]
+  {:recipient {:id sender}
+   :message {:attachment
+             {:type "image"
+              :payload {:url (image-link :baobao)}}}})

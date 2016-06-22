@@ -18,31 +18,58 @@
       (println "Failed, exception is " error)
       (println "Response Status:" status))))
 
-(def user-profile-url
-  (fn [sender]
-    (str base-url
-         sender
-         "?fields=first_name,last_name,locale,profile_pic,timezone,gender"
-         "&access_token=" access-token)))
+(defn user-profile-url [sender]
+  (str base-url
+       sender
+       "?fields=first_name,last_name,locale,profile_pic,timezone,gender"
+       "&access_token=" access-token))
 
-(def get-body
-  (fn [msg]
-    (assoc options :body (json/write-str msg))))
+(defn get-body [msg]
+  (assoc options :body (json/write-str msg)))
 
-(defn send-text-message [sender send-msg]
+(defn get-user-name [body]
+  (str (body :first_name) " " (body :last_name)))
+
+(defn send-image-message [sender]
+  (let [send-image-msg (message/create-image-message sender)
+        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
+    send-image-resp))
+
+(defn send-baobao-image-message [sender]
+  (let [send-image-msg (message/create-baobao-image-message sender)
+        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
+    send-image-resp))
+
+(defn send-button-message [sender]
+  (let [send-butten-msg (message/create-butten-template-message sender)
+        send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
+    send-butten-msg-resp))
+
+(defn get-user-profile [sender]
   (let [user-profile-url (user-profile-url sender)
         user-profile-resp (http/get user-profile-url options)]
-    (let [body (json/read-str (:body @user-profile-resp) :key-fn keyword)
-          user-name (str (body :first_name) " " (body :last_name))
-          send-image-msg (message/create-image-message sender)
-          send-image-resp (http/post text-msg-url (get-body send-image-msg))
-          send-msg-resp (http/post text-msg-url (get-body send-msg))
-          send-butten-msg (message/create-butten-template-message sender)
-          send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
+    user-profile-resp))
 
-      (println user-name)
-      (println (:body @user-profile-resp)))))
+(defn send-text-message [sender message]
+  (let [send-msg (message/create-text-message sender message)
+        user-profile-resp (get-user-profile sender)
+        body (json/read-str (:body @user-profile-resp) :key-fn keyword)
+        user-name (get-user-name body)
+        send-msg-resp (http/post text-msg-url (get-body send-msg))
+        send-butten-msg-resp (send-button-message sender)]
 
-(defn send-butten-message [sender options]
-  (let [send-butten-message-resp (http/post text-msg-url options)]
-    (:body @send-butten-message-resp)))
+    (println user-name)
+    (println (:body @user-profile-resp))))
+
+(defn send-registed-message [sender message]
+  (let [user-profile-resp (get-user-profile sender)
+        body (json/read-str (:body @user-profile-resp) :key-fn keyword)
+        user-name (get-user-name body)
+        send-msg (message/create-resgisted-message sender user-name message)
+        send-msg-resp (http/post text-msg-url (get-body send-msg))]
+
+    (println send-msg)
+    (println (:body @user-profile-resp))))
+
+(defn send-baobao-message [sender message]
+  (send-baobao-image-message sender))
