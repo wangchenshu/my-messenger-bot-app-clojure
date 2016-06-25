@@ -3,7 +3,8 @@
 
 (def image-link {:h4 "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fh4-logo%2F700.jpg?alt=media&token=04ff5f19-2d0c-470f-8581-396085fbb10d"
                  :emacs "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Femacs-logo%2Femacs_logo_large.png?alt=media&token=a8a55896-f703-4e10-adce-302a44f792c5"
-                 :baobao "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fother%2Fiyiy.jpg?alt=media&token=1d0dfd87-d61a-48d5-8ea0-0bd86c9b9458"})
+                 :baobao "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fother%2Fiyiy.jpg?alt=media&token=1d0dfd87-d61a-48d5-8ea0-0bd86c9b9458"
+                 :fb-good "https://firebasestorage.googleapis.com/v0/b/walter-bot-a2142.appspot.com/o/line-bot%2Fimage%2Fother%2Ffb-good.png?alt=media&token=52fde993-26a0-4872-bbc7-eb78933cf470"})
 (def h4-web "http://www.hackingthursday.org/")
 (def h4-meetup "http://www.meetup.com/hackingthursday/")
 (def h4-fb "http://www.facebook.com/groups/hackingday/")
@@ -94,14 +95,29 @@
                          {:type "web_url" :title "Meetup" :url h4-meetup}]
                }}}})
 
-(defn create-image-message [sender]
+(defn create-image-message [sender img-key]
   {:recipient {:id sender}
    :message {:attachment
              {:type "image"
-              :payload {:url (image-link :h4)}}}})
+              :payload {:url (image-link img-key)}}}})
+
+(defn create-image-message-url [sender url]
+  {:recipient {:id sender}
+   :message {:attachment
+             {:type "image"
+              :payload {:url url}}}})
 
 (defn create-baobao-image-message [sender]
   {:recipient {:id sender}
    :message {:attachment
              {:type "image"
               :payload {:url (image-link :baobao)}}}})
+
+(defn wanna-register? [message]
+  (or (re-find #"register" message)
+      (re-find #"報到" message)
+      (re-find #"簽到" message)))
+
+(defn wanna-baobao? [message]
+  (or (re-find #"baobao" message)
+      (re-find #"抱抱" message)))

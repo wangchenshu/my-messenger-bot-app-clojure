@@ -30,46 +30,41 @@
 (defn get-user-name [body]
   (str (body :first_name) " " (body :last_name)))
 
-(defn send-image-message [sender]
-  (let [send-image-msg (message/create-image-message sender)
-        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
-    send-image-resp))
-
-(defn send-baobao-image-message [sender]
-  (let [send-image-msg (message/create-baobao-image-message sender)
-        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
-    send-image-resp))
+(defn get-user-profile [sender]
+  (let [user-profile-url (user-profile-url sender)
+        user-profile-resp (http/get user-profile-url options)]
+    user-profile-resp))
 
 (defn send-button-message [sender]
   (let [send-butten-msg (message/create-butten-template-message sender)
         send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
     send-butten-msg-resp))
 
-(defn get-user-profile [sender]
-  (let [user-profile-url (user-profile-url sender)
-        user-profile-resp (http/get user-profile-url options)]
-    user-profile-resp))
-
-(defn send-text-message [sender message]
-  (let [send-msg (message/create-text-message sender message)
+(defn send-text-message [sender text]
+  (let [send-msg (message/create-text-message sender text)
         user-profile-resp (get-user-profile sender)
         body (json/read-str (:body @user-profile-resp) :key-fn keyword)
         user-name (get-user-name body)
         send-msg-resp (http/post text-msg-url (get-body send-msg))
         send-butten-msg-resp (send-button-message sender)]
-
     (println user-name)
     (println (:body @user-profile-resp))))
 
-(defn send-registed-message [sender message]
+(defn send-registed-message [sender text]
   (let [user-profile-resp (get-user-profile sender)
         body (json/read-str (:body @user-profile-resp) :key-fn keyword)
         user-name (get-user-name body)
-        send-msg (message/create-resgisted-message sender user-name message)
+        send-msg (message/create-resgisted-message sender user-name text)
         send-msg-resp (http/post text-msg-url (get-body send-msg))]
-
     (println send-msg)
     (println (:body @user-profile-resp))))
 
-(defn send-baobao-message [sender message]
-  (send-baobao-image-message sender))
+(defn send-image-message [sender img-key]
+  (let [send-image-msg (message/create-image-message sender img-key)
+        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
+    send-image-resp))
+
+(defn send-image-message-url [sender url]
+  (let [send-image-msg (message/create-image-message-url sender url)
+        send-image-resp (http/post text-msg-url (get-body send-image-msg))]
+    send-image-resp))

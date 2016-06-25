@@ -3,26 +3,33 @@
             [my-messenger-bot-app-clojure.message :as message]
             [my-messenger-bot-app-clojure.my-handler :as my-handler]))
 
-(defn wanna-register? [message]
-  (or (re-find #"register" message)
-      (re-find #"報到" message)
-      (re-find #"簽到" message)))
+(defn req-messaging [req]
+  (->> (req :entry) first :messaging first))
 
-(defn wanna-baobao? [message]
-  (or (re-find #"baobao" message)
-      (re-find #"抱抱" message)))
+(defn attachments-payload-url [message]
+  (->> (message :attachments) first :payload :url))
+
+(defn messaging-sender-id [messaging]
+  (-> messaging :sender :id))
 
 (defn route [req]
   (let [req (json/read-str (slurp(req :body)) :key-fn keyword)
-        messaging (->> (req :entry) first :messaging first)
-        sender (-> messaging :sender :id)
-        message (-> messaging :message :text)
+        messaging (req-messaging req)
+        sender (messaging-sender-id messaging)
+        message (messaging :message)
+        text (message :text)
         timestamp (messaging :timestamp)]
-    (println messaging)
+    (println message)
 
-    (cond
-      (wanna-register? message)
-      (my-handler/send-registed-message sender message)
-      (wanna-baobao? message)
-      (my-handler/send-baobao-message sender message)
-      :else (my-handler/send-text-message sender message))))
+    (if (contains? message :attachments)
+        (let [img-url (attachments-payload-url message)]
+          (my-handler/send-image-message-url sender img-url))
+        (try
+          (cond
+          (message/wanna-register? text)
+          (my-handler/send-registed-message sender text)
+          (message/wanna-baobao? text)
+          (my-handler/send-image-message sender :baobao)
+          :else (my-handler/send-text-message sender text))
+          (catch Exception e (str "caught exception: " (.getMessage e)))))))
+
