@@ -4,6 +4,13 @@
            [clojure.data.json :as json]
            [my-messenger-bot-app-clojure.message :as message]))
 
+(declare get-user-profile)
+(declare send-text-message)
+(declare send-registed-message)
+(declare send-button-message)
+(declare send-image-message)
+(declare send-image-message-url)
+
 (def config (load-file "config.clj"))
 (def access-token (config :access-token))
 (def base-url (config :base-url)) 
@@ -35,11 +42,6 @@
         user-profile-resp (http/get user-profile-url options)]
     user-profile-resp))
 
-(defn send-button-message [sender]
-  (let [send-butten-msg (message/create-butten-template-message sender)
-        send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
-    send-butten-msg-resp))
-
 (defn send-text-message [sender text]
   (let [send-msg (message/create-text-message sender text)
         user-profile-resp (get-user-profile sender)
@@ -58,6 +60,11 @@
         send-msg-resp (http/post text-msg-url (get-body send-msg))]
     (println send-msg)
     (println (:body @user-profile-resp))))
+
+(defn send-button-message [sender]
+  (let [send-butten-msg (message/create-butten-template-message sender)
+        send-butten-msg-resp (http/post text-msg-url (get-body send-butten-msg))]
+    send-butten-msg-resp))
 
 (defn send-image-message [sender img-key]
   (let [send-image-msg (message/create-image-message sender img-key)
