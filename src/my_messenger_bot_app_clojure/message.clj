@@ -10,6 +10,7 @@
 (def h4-fb "http://www.facebook.com/groups/hackingday/")
 (def send-text {:default "Welcome to h4!"
                 :h4 "Welcome to h4!"
+                :h4-helper "我是 H4 小幫手"
                 :emacs "Welcome to Emacs Taiwan!"
                 :how-are-you-today "How are you today?"
                 :i-am-fine "Fine, how do you do."
@@ -37,7 +38,8 @@
                               "Google Group: http://groups.google.com/group/hackingthursday"]
                 :registed " 您好, 已完成報到手續, 謝謝。"
                 :good-d-ya "好的呀"
-                :iyiy "搖搖照騙"})
+                :iyiy "搖搖照騙"
+                :aa "@@"})
 
 (defn get-suggest-message [text]
   (cond
@@ -61,6 +63,9 @@
     (or (re-find #"register" text)
         (re-find #"報到" text)
         (re-find #"簽到" text)) (send-text :register)
+    (or (re-find #"這啥" text)
+        (re-find #"這是什" text)) (send-text :h4-helper)
+    (re-find #"@@" text) (send-text :aa)
     (re-find #"已給到" text) (send-text :good-d-ya)
     (re-find #"抱抱" text) (send-text :iyiy)
     (re-find #"web" text) h4-web
