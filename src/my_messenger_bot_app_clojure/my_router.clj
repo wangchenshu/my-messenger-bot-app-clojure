@@ -32,4 +32,3 @@
           (my-handler/send-image-message sender :baobao)
           :else (my-handler/send-text-message sender text))
           (catch Exception e (str "caught exception: " (.getMessage e)))))))
-

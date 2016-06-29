@@ -118,11 +118,11 @@
              {:type "image"
               :payload {:url (image-link :baobao)}}}})
 
-(defn wanna-register? [message]
-  (or (re-find #"register" message)
-      (re-find #"報到" message)
-      (re-find #"簽到" message)))
+(defn wanna-register? [text]
+  (or (re-find #"register" text)
+      (re-find #"報到" text)
+      (re-find #"簽到" text)))
 
-(defn wanna-baobao? [message]
-  (or (re-find #"baobao" message)
-      (re-find #"抱抱" message)))
+(defn wanna-baobao? [text]
+  (or (re-find #"baobao" text)
+      (re-find #"抱抱" text)))

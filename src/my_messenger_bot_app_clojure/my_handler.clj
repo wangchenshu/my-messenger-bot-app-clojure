@@ -49,8 +49,7 @@
         user-name (get-user-name body)
         send-msg-resp (http/post text-msg-url (get-body send-msg))
         send-butten-msg-resp (send-button-message sender)]
-    (println user-name)
-    (println (:body @user-profile-resp))))
+    send-butten-msg-resp))
 
 (defn send-registed-message [sender text]
   (let [user-profile-resp (get-user-profile sender)
@@ -58,8 +57,7 @@
         user-name (get-user-name body)
         send-msg (message/create-resgisted-message sender user-name text)
         send-msg-resp (http/post text-msg-url (get-body send-msg))]
-    (println send-msg)
-    (println (:body @user-profile-resp))))
+    send-msg-resp))
 
 (defn send-button-message [sender]
   (let [send-butten-msg (message/create-butten-template-message sender)
