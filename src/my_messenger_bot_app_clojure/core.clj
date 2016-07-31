@@ -4,7 +4,8 @@
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
             [my-messenger-bot-app-clojure.my-router :as my-router])
-  (:use org.httpkit.server))
+  (:use org.httpkit.server)
+  (:gen-class))
 
 (def config (load-file "config.clj"))
 (def port (config :port))
