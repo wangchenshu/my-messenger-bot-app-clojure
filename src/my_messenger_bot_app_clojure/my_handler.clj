@@ -51,6 +51,13 @@
         send-butten-msg-resp (send-button-message sender)]
     send-butten-msg-resp))
 
+(defn send-text-message2 [sender text]
+  (let [send-msg (message/create-text-message sender text)
+        user-profile-resp (get-user-profile sender)
+        body (json/read-str (:body @user-profile-resp) :key-fn keyword)
+        user-name (get-user-name body)
+        send-msg-resp (http/post text-msg-url (get-body send-msg))]))
+
 (defn send-registed-message [sender text]
   (let [user-profile-resp (get-user-profile sender)
         body (json/read-str (:body @user-profile-resp) :key-fn keyword)

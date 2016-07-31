@@ -73,9 +73,14 @@
     (re-find #"fb" text) h4-fb
     :else (send-text :default)))
 
+(defn get-suggest-message2 [text]
+  (cond
+    (re-find #"閒聊" text) "你好專業，難道是自已人？"
+    :else "假的，都是假的！"))
+
 (defn create-text-message [sender text]
   (let [text (string/lower-case text)
-        send-text (get-suggest-message text)]
+        send-text (get-suggest-message2 text)]
     {:recipient {:id sender}
      :message {:text send-text}}))
 

@@ -30,5 +30,5 @@
           (my-handler/send-registed-message sender text)
           (message/wanna-baobao? text)
           (my-handler/send-image-message sender :baobao)
-          :else (my-handler/send-text-message sender text))
+          :else (my-handler/send-text-message2 sender text))
           (catch Exception e (str "caught exception: " (.getMessage e)))))))
